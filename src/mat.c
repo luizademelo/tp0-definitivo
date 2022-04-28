@@ -33,6 +33,11 @@ void criaMatriz(mat_tipo * mat, int tx, int ty, int id)
   // inicializa as dimensoes da matriz
   mat->tamx = tx;
   mat->tamy = ty;
+
+  // aloca a matriz dinamicamente
+  mat->m = (double**) malloc(mat->tamx * sizeof(double*)); 
+  for(int i = 0; i < mat->tamx; i++)
+    mat->m[i] = (double*) malloc(mat->tamy * sizeof(double)); 
   // inicializa o identificador da matriz, para rastreamento
   mat->id = id;
 }
@@ -241,6 +246,11 @@ void destroiMatriz(mat_tipo *a)
 {
   // apenas um aviso se a matriz for destruida mais de uma vez
   avisoAssert(((a->tamx>0)&&(a->tamy>0)),"Matriz já foi destruida");
+
+  // libera o espaço alocado pela matriz 
+  for(int i = 0; i < a->tamx; i++)
+    free(a->m[i]); 
+  free(a->m); 
 
   // torna as dimensoes invalidas
   a->id = a->tamx = a->tamy = -1;

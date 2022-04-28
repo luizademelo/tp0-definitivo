@@ -16,7 +16,7 @@
 #endif
 
 typedef struct mat{
-	double m[MAXTAM][MAXTAM];
+	double **m;
 	int tamx, tamy;
 	int id;
 } mat_tipo;
