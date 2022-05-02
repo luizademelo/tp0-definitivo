@@ -11,9 +11,9 @@
 
 #include "memlog.h"
 
-#ifndef MAXTAM 
-#define MAXTAM 500
-#endif
+// #ifndef MAXTAM 
+// #define MAXTAM 500
+// #endif
 
 typedef struct mat{
 	double **m;
