@@ -19,6 +19,39 @@
 // Macro que realiza swap sem variavel auxiliar
 #define ELEMSWAP(x,y) (x+=y,y=x-y,x-=y)
 
+void leMatriz(char *nome_arquivo, mat_tipo *mat)
+{
+  FILE *arq; 
+  arq = fopen(nome_arquivo, "r");   
+  int m, n;
+  double elemento;  
+  fscanf(arq, "%d", &m); 
+  fscanf(arq, "%d", &n);
+  criaMatriz(mat, m, n, 0); 
+  for(int i = 0; i < m; i++){
+    for(int j = 0; j < n; j++){
+      fscanf(arq, "%lf", &elemento); 
+      escreveElemento(mat, i, j, elemento); 
+    }
+  }
+  fclose(arq); 
+}
+
+void escreveSaida(mat_tipo *c, char *outputName)
+{
+  // escrevendo a saída no arquivo res.out 
+  FILE *res = NULL; 
+  res = fopen(outputName, "w"); 
+  fprintf(res, "%d %d\n", c->tamx, c->tamy); 
+  for(int i = 0; i < c->tamx; i++){
+    for(int j = 0; j < c->tamy; j++){
+      fprintf(res, "%.4f ", c->m[i][j]); 
+    }
+    fprintf(res, "\n"); 
+  }
+  fclose(res); 
+}
+
 void criaMatriz(mat_tipo * mat, int tx, int ty, int id)
 // Descricao: cria matriz com dimensoes tx X ty
 // Entrada: mat, tx, ty, id
@@ -27,8 +60,6 @@ void criaMatriz(mat_tipo * mat, int tx, int ty, int id)
   // verifica se os valores de tx e ty são validos
   erroAssert(tx>0,"Dimensao nula");
   erroAssert(ty>0,"Dimensao nula");
-  erroAssert(tx<=MAXTAM,"Dimensao maior que permitido");
-  erroAssert(ty<=MAXTAM,"Dimensao maior que permitido");
 
   // inicializa as dimensoes da matriz
   mat->tamx = tx;
@@ -42,6 +73,7 @@ void criaMatriz(mat_tipo * mat, int tx, int ty, int id)
   mat->id = id;
 }
 
+
 void inicializaMatrizNula(mat_tipo * mat)
 // Descricao: inicializa mat com valores nulos 
 // Entrada: mat
@@ -49,12 +81,13 @@ void inicializaMatrizNula(mat_tipo * mat)
 {
   int i, j;
   // inicializa todos os elementos da matriz com 0, por seguranca 
-  for (i=0; i<MAXTAM; i++){
-    for(j=0; j<MAXTAM; j++){
+  for (i=0; i< mat->tamx; i++){
+    for(j=0; j< mat->tamy; j++){
       mat->m[i][j] = 0;
       ESCREVEMEMLOG((long int)(&(mat->m[i][j])),sizeof(double),mat->id);
     }
   }
+
 }
 
 void inicializaMatrizAleatoria(mat_tipo * mat)
@@ -98,9 +131,6 @@ void imprimeMatriz(mat_tipo * mat)
 {
   int i,j;
 
-  // seguranca, mas erro não deve acontecer jamais
-  erroAssert(mat->tamx<=MAXTAM,"Dimensao maior que permitido");
-  erroAssert(mat->tamy<=MAXTAM,"Dimensao maior que permitido");
 
   // imprime os identificadores de coluna
   printf("%9s"," ");
@@ -125,8 +155,8 @@ void escreveElemento(mat_tipo * mat, int x, int y, double v)
 // Saida: mat
 {
   // verifica se x e y sao validos
-  erroAssert((x<0)||(x>=mat->tamx),"Indice invalido");
-  erroAssert((y<0)||(y>=mat->tamy),"Indice invalido");
+  erroAssert((x>=0)&&(x<mat->tamx),"Indice invalido");
+  erroAssert((y>=0)&&(y<mat->tamy),"Indice invalido");
 
   mat->m[x][y] = v;
   ESCREVEMEMLOG((long int)(&(mat->m[x][y])),sizeof(double),mat->id);
@@ -179,7 +209,7 @@ void somaMatrizes(mat_tipo *a, mat_tipo *b, mat_tipo *c)
   // inicializa a matriz c garantindo a compatibilidade das dimensoes
   criaMatriz(c,a->tamx, a->tamy, c->id);
   inicializaMatrizNula(c);
-
+   
   // faz a soma elemento a elemento
   for (i=0; i<a->tamx; i++){
     for(j=0; j<a->tamy; j++){
@@ -189,6 +219,8 @@ void somaMatrizes(mat_tipo *a, mat_tipo *b, mat_tipo *c)
       ESCREVEMEMLOG((long int)(&(c->m[i][j])),sizeof(double),c->id);
     }
   }
+
+
 }
 
 void multiplicaMatrizes(mat_tipo *a, mat_tipo *b, mat_tipo *c)
@@ -236,7 +268,7 @@ void transpoeMatriz(mat_tipo *a)
     }
   }
   // inverte as dimensoes da matriz transposta
-  ELEMSWAP(a->tamx,a->tamy);
+  ELEMSWAP(a->tamx,a->tamy); 
 }
 
 void destroiMatriz(mat_tipo *a)
