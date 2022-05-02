@@ -25,7 +25,10 @@
 // variaveis globais para opcoes
 static int opescolhida;
 char lognome[100];
-int optx, opty, regmem;
+char nomeMatriz1[100]; 
+char nomeMatriz2[100]; 
+char outputName[100]; 
+int regmem;
 
 void uso()
 // Descricao: imprime as opcoes de uso
@@ -61,10 +64,13 @@ void parse_args(int argc,char ** argv)
      opty = -1;
      regmem = 0;
      lognome[0] = 0;
+     nomeMatriz1[0] = 0; 
+     nomeMatriz2[0] = 0; 
+     outputName[0] = 0; 
 
      // getopt - letra indica a opcao, : junto a letra indica parametro
      // no caso de escolher mais de uma operacao, vale a ultima
-     while ((c = getopt(argc, argv, "smtp:x:y:lh")) != EOF)
+     while ((c = getopt(argc, argv, "smtp:1:2:lh")) != EOF)
        switch(c) {
          case 'm':
 		  avisoAssert(opescolhida==-1,"Mais de uma operacao escolhida");
