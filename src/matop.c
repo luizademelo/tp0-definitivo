@@ -125,8 +125,8 @@ int main(int argc, char **argv)
     defineFaseMemLog(1);
     acessaMatriz(&a);
     acessaMatriz(&b);
-    acessaMatriz(&c);
     somaMatrizes(&a, &b, &c);
+    acessaMatriz(&c);
     escreveSaida(&c, outputName);
     defineFaseMemLog(2);
     acessaMatriz(&c);

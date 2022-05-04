@@ -22,7 +22,7 @@ BIN = bin
 OBJS = $(OBJ)/matop.o $(OBJ)/mat.o $(OBJ)/memlog.o
 HDRS = $(INC)/mat.h $(INC)/memlog.h $(INC)/msgassert.h
 CFLAGS = -pg -Wall -c -I$(INC)
-
+ANALISAMEM = ./analisamem/bin/analisamem
 
 
 EXE = $(BIN)/matop
@@ -30,8 +30,18 @@ EXE = $(BIN)/matop
 all: mem $(EXE) 
 
 mem: $(EXE)
-	$(EXE) -s -1 m1.txt -2 m2.txt -o res.out -p log.out -l
-	$(EXE) -m -1 m1.txt -2 m2.txt -o res.out -p log.out -l
+	$(EXE) -s -1 m1.txt -2 m2.txt -o soma.out -p /tmp/somalog.out -l
+	rm -rf /tmp/somadin 
+	mkdir /tmp/somadin
+	$(ANALISAMEM) -i /tmp/somalog.out -p /tmp/somadin/somadin
+	$(EXE) -m -1 m1.txt -2 m2.txt -o mult.out -p /tmp/internolog.out -l
+	rm -rf /tmp/internodin 
+	mkdir /tmp/internodin
+	$(ANALISAMEM) -i /tmp/internolog.out -p /tmp/internodin/internodin
+	$(EXE) -t -1 m1.txt -o transp.out -p /tmp/transplog.out -l 
+	rm -rf /tmp/transpdin 
+	mkdir /tmp/transpdin
+	$(ANALISAMEM) -i /tmp/transplog.out -p /tmp/transpdin
 $(EXE): $(OBJS)
 	$(CC) -pg -o $(BIN)/matop $(OBJS) $(LIBS)
 
